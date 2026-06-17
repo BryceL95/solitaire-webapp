@@ -21,11 +21,14 @@ body.bg-dark-wood{background:#3d2b1f;background-image:repeating-linear-gradient(
 body.bg-midnight{background:linear-gradient(135deg,#0f0f1a 0%,#1a1a35 50%,#0f0f1a 100%);}
 
 /* ── Header ── */
-#hdr{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);flex-wrap:wrap;gap:5px;position:sticky;top:0;z-index:100;}
-#hdr-left,#hdr-right{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
-#info-bar{display:flex;align-items:center;gap:8px;color:#e8f5e9;font-size:13px;font-weight:600;}
+#hdr{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);gap:8px;position:sticky;top:0;z-index:100;flex-wrap:wrap;}
+#hdr-left{display:flex;align-items:center;gap:6px;flex:1;flex-wrap:wrap;}
+#hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+#hdr-actions{display:flex;gap:5px;align-items:center;}
+#hdr-nav{display:flex;gap:5px;align-items:center;}
+#info-bar{display:flex;align-items:center;gap:6px;color:#e8f5e9;font-size:13px;font-weight:600;flex-wrap:wrap;}
 #info-bar span{background:rgba(0,0,0,.35);border-radius:5px;padding:3px 8px;white-space:nowrap;}
-.btn{cursor:pointer;border:none;border-radius:6px;padding:7px 13px;font-size:13px;font-weight:700;transition:all .15s;outline:none;white-space:nowrap;}
+.btn{cursor:pointer;border:none;border-radius:6px;padding:7px 12px;font-size:13px;font-weight:700;transition:all .15s;outline:none;white-space:nowrap;}
 .btn-primary{background:#4caf50;color:#fff;}
 .btn-primary:hover{background:#43a047;}
 .btn-secondary{background:rgba(255,255,255,.18);color:#e8f5e9;border:1px solid rgba(255,255,255,.25);}
@@ -35,6 +38,14 @@ body.bg-midnight{background:linear-gradient(135deg,#0f0f1a 0%,#1a1a35 50%,#0f0f1
 .btn-danger{background:#e53935;color:#fff;}
 .btn-danger:hover{background:#c62828;}
 #autoFinishBtn{display:none;}
+
+/* ── Pause overlay ── */
+#pause-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);align-items:center;justify-content:center;cursor:pointer;flex-direction:column;gap:16px;}
+#pause-overlay.active{display:flex;}
+#pause-content{text-align:center;color:white;pointer-events:none;}
+#pause-content .pause-icon{font-size:56px;line-height:1;}
+#pause-content .pause-label{font-size:28px;font-weight:900;letter-spacing:.1em;margin-top:8px;}
+#pause-content .pause-hint{font-size:14px;color:rgba(255,255,255,.6);margin-top:10px;}
 
 /* ── Board ── */
 #board{padding:var(--board-pad);display:flex;flex-direction:column;gap:var(--gap);}
@@ -113,8 +124,6 @@ body.bg-midnight{background:linear-gradient(135deg,#0f0f1a 0%,#1a1a35 50%,#0f0f1
 .modal h2{font-size:20px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:10px;}
 .modal h3{font-size:12px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.07em;margin:14px 0 8px;}
 .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px;}
-
-/* Settings */
 .opt-group{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
 .opt-btn{cursor:pointer;border:2px solid rgba(255,255,255,.15);border-radius:8px;padding:7px 13px;font-size:13px;font-weight:600;color:#ccc;background:rgba(255,255,255,.05);transition:all .15s;}
 .opt-btn:hover{border-color:rgba(255,255,255,.4);color:#fff;}
@@ -127,12 +136,9 @@ body.bg-midnight{background:linear-gradient(135deg,#0f0f1a 0%,#1a1a35 50%,#0f0f1
 .toggle input:checked+.toggle-track{background:#4caf50;}
 .toggle-thumb{position:absolute;width:20px;height:20px;background:white;border-radius:50%;top:2px;left:2px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.4);}
 .toggle input:checked~.toggle-thumb{left:20px;}
-
 .swatch-row{display:flex;gap:8px;flex-wrap:wrap;}
 .swatch{width:38px;height:38px;border-radius:8px;cursor:pointer;border:3px solid transparent;transition:.15s;}
 .swatch:hover,.swatch.active{border-color:#fff;transform:scale(1.08);}
-
-/* Stats */
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
 .stat-box{background:rgba(0,0,0,.2);border-radius:8px;padding:10px;text-align:center;}
 .stat-box .val{font-size:24px;font-weight:700;color:#4caf50;}
@@ -142,32 +148,38 @@ body.bg-midnight{background:linear-gradient(135deg,#0f0f1a 0%,#1a1a35 50%,#0f0f1
 .history-table td{padding:5px 6px;border-bottom:1px solid rgba(255,255,255,.06);}
 .history-table tr.won td{color:#81c784;}
 .history-table tr.lost td{color:#ef9a9a;}
-
-/* Win */
 #win-overlay .modal{text-align:center;}
 #win-title{font-size:30px;margin-bottom:8px;color:#ffeb3b;}
 
-/* Banner */
-#no-moves-banner{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#c62828;color:white;border-radius:10px;padding:12px 22px;font-weight:700;font-size:14px;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,.5);max-width:92%;text-align:center;}
+/* ── Banner ── */
+#no-moves-banner{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#c62828;color:white;border-radius:10px;padding:12px 22px;font-weight:700;font-size:14px;z-index:400;box-shadow:0 4px 20px rgba(0,0,0,.5);max-width:92%;text-align:center;}
 
-/* Loading */
+/* ── Loading ── */
 #loading-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:white;font-size:16px;font-weight:600;}
 #loading-overlay.open{display:flex;}
 .spinner{width:44px;height:44px;border:4px solid rgba(255,255,255,.2);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* Mobile header collapse */
 @media(max-width:520px){
-  #hdr{padding:5px 8px;gap:4px;}
+  #hdr{padding:5px 8px;gap:5px;}
   .btn{padding:6px 9px;font-size:12px;}
-  #info-bar{font-size:11px;gap:5px;}
-  #info-bar span{padding:2px 6px;}
+  #info-bar{font-size:11px;gap:4px;}
+  #info-bar span{padding:2px 5px;}
 }
 </style>
 </head>
 <body class="bg-felt-green">
 
 <div id="loading-overlay"><div class="spinner"></div><div id="loading-msg">Finding a winnable game…</div></div>
+
+<!-- ── Pause overlay ── -->
+<div id="pause-overlay" onclick="togglePause()">
+  <div id="pause-content">
+    <div class="pause-icon">⏸</div>
+    <div class="pause-label">PAUSED</div>
+    <div class="pause-hint">Click anywhere to resume</div>
+  </div>
+</div>
 
 <!-- ── Settings Modal ── -->
 <div class="overlay" id="settings-overlay">
@@ -261,25 +273,30 @@ body.bg-midnight{background:linear-gradient(135deg,#0f0f1a 0%,#1a1a35 50%,#0f0f1
 <!-- ── Header ── -->
 <div id="hdr">
   <div id="hdr-left">
-    <button class="btn btn-primary"   onclick="startNewGame()">New Game</button>
-    <button class="btn btn-secondary" onclick="undoMove()" id="undoBtn">↩ Undo</button>
-    <button class="btn btn-warn"      id="autoFinishBtn" onclick="beginAutoFinish()">Auto Finish ✨</button>
+    <button class="btn btn-warn" id="autoFinishBtn" onclick="beginAutoFinish()">Auto Finish ✨</button>
+    <div id="info-bar">
+      <span id="timerDisplay">0:00</span>
+      <span>Moves: <b id="movesDisplay">0</b></span>
+      <span>Mistakes: <b id="mistakesDisplay">0</b></span>
+      <span>Undos: <b id="undosDisplay">0</b></span>
+    </div>
   </div>
-  <div id="info-bar">
-    <span id="timerDisplay">0:00</span>
-    <span>Moves: <b id="movesDisplay">0</b></span>
-    <span>Mistakes: <b id="mistakesDisplay">0</b></span>
-    <span>Undos: <b id="undosDisplay">0</b></span>
-  </div>
+  <!-- Right side: New Game + Undo + Pause on top row; Settings + Stats below -->
   <div id="hdr-right">
-    <button class="btn btn-secondary" onclick="showSettings()">🎨</button>
-    <button class="btn btn-secondary" onclick="showStats()">📊</button>
+    <div id="hdr-actions">
+      <button class="btn btn-primary"   onclick="startNewGame()">New Game</button>
+      <button class="btn btn-secondary" onclick="undoMove()" id="undoBtn">↩ Undo</button>
+      <button class="btn btn-secondary" id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
+    </div>
+    <div id="hdr-nav">
+      <button class="btn btn-secondary" onclick="showSettings()">🎨 Settings</button>
+      <button class="btn btn-secondary" onclick="showStats()">📊 Stats</button>
+    </div>
   </div>
 </div>
 
 <!-- ── Board ── -->
 <div id="board">
-  <!-- foundations LEFT, waste+stock RIGHT -->
   <div id="top-row">
     <div class="pile-slot foundation" id="foundation-0"><span class="suit-hint">♠</span></div>
     <div class="pile-slot foundation" id="foundation-1"><span class="suit-hint">♥</span></div>
@@ -305,59 +322,50 @@ body.bg-midnight{background:linear-gradient(135deg,#0f0f1a 0%,#1a1a35 50%,#0f0f1
 // FLUID CARD SIZING
 // ════════════════════════════════════════
 function updateCardSize(){
-  const gap = 6;
-  const pad = 8 * 2; // both sides
-  const maxW = 90;
-  const w = Math.min(maxW, Math.floor((window.innerWidth - pad - gap * 6) / 7));
-  const h = Math.round(w * 1.4);
-  const r = document.documentElement;
-  r.style.setProperty('--card-w', w+'px');
-  r.style.setProperty('--card-h', h+'px');
-  r.style.setProperty('--card-r', Math.max(4, Math.round(w*0.08))+'px');
-  r.style.setProperty('--tab-offset-down', Math.round(w*0.22)+'px');
-  r.style.setProperty('--tab-offset-up',   Math.round(w*0.37)+'px');
-  // waste area width: enough for 3-card fan (2 offsets + 1 card)
-  const fanOffset = Math.max(10, Math.round(w*0.22));
-  document.getElementById('waste-area').style.width = (w + fanOffset*2)+'px';
+  const gap=6, pad=16, maxW=90;
+  const w=Math.min(maxW, Math.floor((window.innerWidth-pad-gap*6)/7));
+  const h=Math.round(w*1.4);
+  const r=document.documentElement;
+  r.style.setProperty('--card-w',w+'px');
+  r.style.setProperty('--card-h',h+'px');
+  r.style.setProperty('--card-r',Math.max(4,Math.round(w*.08))+'px');
+  r.style.setProperty('--tab-offset-down',Math.round(w*.22)+'px');
+  r.style.setProperty('--tab-offset-up',  Math.round(w*.37)+'px');
+  const fanOff=Math.max(10,Math.round(w*.22));
+  document.getElementById('waste-area').style.width=(w+fanOff*2)+'px';
 }
 updateCardSize();
-window.addEventListener('resize', ()=>{ updateCardSize(); if(G) render(); });
+window.addEventListener('resize',()=>{updateCardSize();if(G)render();});
 
 // ════════════════════════════════════════
 // CONSTANTS
 // ════════════════════════════════════════
-const SUITS  = ['S','H','D','C'];
-const SYM    = {S:'♠',H:'♥',D:'♦',C:'♣'};
-const RN     = {1:'A',11:'J',12:'Q',13:'K'};
-const IS_RED = {H:true,D:true,S:false,C:false};
+const SUITS  =['S','H','D','C'];
+const SYM    ={S:'♠',H:'♥',D:'♦',C:'♣'};
+const RN     ={1:'A',11:'J',12:'Q',13:'K'};
+const IS_RED ={H:true,D:true,S:false,C:false};
 function rn(r){return RN[r]||''+r;}
 function isRed(s){return IS_RED[s];}
 
 // ════════════════════════════════════════
 // SETTINGS
 // ════════════════════════════════════════
-const DEF_CFG = {winnableOnly:false,drawCount:1,cardFace:'classic',cardBack:'blue',background:'felt-green'};
-let cfg = Object.assign({},DEF_CFG,JSON.parse(localStorage.getItem('sol-cfg')||'{}'));
+const DEF_CFG={winnableOnly:false,drawCount:1,cardFace:'classic',cardBack:'blue',background:'felt-green'};
+let cfg=Object.assign({},DEF_CFG,JSON.parse(localStorage.getItem('sol-cfg')||'{}'));
 function saveCfg(){localStorage.setItem('sol-cfg',JSON.stringify(cfg));}
 
 // ════════════════════════════════════════
 // STATS
 // ════════════════════════════════════════
-const DEF_STATS = {played:0,won:0,bestTime:null,bestMoves:null,totalMistakes:0,totalUndos:0,history:[]};
+const DEF_STATS={played:0,won:0,bestTime:null,bestMoves:null,totalMistakes:0,totalUndos:0,history:[]};
 function getStats(){return Object.assign({},DEF_STATS,JSON.parse(localStorage.getItem('sol-stats')||'{}'));}
 function saveStats(s){localStorage.setItem('sol-stats',JSON.stringify(s));}
-
-function recordGameEnd(wonGame, time, moves, mistakes, undos){
-  const s=getStats();
-  s.played++;
-  if(wonGame){
-    s.won++;
-    if(s.bestTime===null||time<s.bestTime) s.bestTime=time;
-    if(s.bestMoves===null||moves<s.bestMoves) s.bestMoves=moves;
-  }
-  s.totalMistakes+=mistakes; s.totalUndos+=undos;
+function recordGameEnd(wonGame,time,moves,mistakes,undos){
+  const s=getStats();s.played++;
+  if(wonGame){s.won++;if(s.bestTime===null||time<s.bestTime)s.bestTime=time;if(s.bestMoves===null||moves<s.bestMoves)s.bestMoves=moves;}
+  s.totalMistakes+=mistakes;s.totalUndos+=undos;
   s.history.unshift({won:wonGame,time,moves,mistakes,undos,date:new Date().toISOString()});
-  if(s.history.length>20) s.history.length=20;
+  if(s.history.length>20)s.history.length=20;
   saveStats(s);
 }
 
@@ -365,11 +373,7 @@ function recordGameEnd(wonGame, time, moves, mistakes, undos){
 // CARD & DECK UTILITIES
 // ════════════════════════════════════════
 function mkCard(suit,rank,faceUp=false){return{suit,rank,faceUp};}
-function mkDeck(){
-  const d=[];
-  for(const s of SUITS) for(let r=1;r<=13;r++) d.push(mkCard(s,r));
-  return d;
-}
+function mkDeck(){const d=[];for(const s of SUITS)for(let r=1;r<=13;r++)d.push(mkCard(s,r));return d;}
 function shuffle(arr){
   const a=[...arr];
   for(let i=a.length-1;i>0;i--){const j=0|Math.random()*(i+1);[a[i],a[j]]=[a[j],a[i]];}
@@ -391,6 +395,7 @@ function dealDeck(deck,drawCount){
   for(let col=0;col<7;col++)
     for(let row=0;row<=col;row++)
       tableau[col].push(mkCard(deck[idx].suit,deck[idx++].rank,row===col));
+  // Stock cards are always face-down
   return{
     stock:deck.slice(idx).map(c=>mkCard(c.suit,c.rank,false)),
     waste:[],foundations:[[],[],[],[]],
@@ -401,9 +406,10 @@ function dealDeck(deck,drawCount){
 // ════════════════════════════════════════
 // GAME STATE
 // ════════════════════════════════════════
-let G=null, history=[], timerInterval=null, startTime=null,
-    elapsedSec=0, timerStarted=false, gameOver=false,
-    autoFinishing=false, autoFinishTimer=null;
+let G=null,history=[],timerInterval=null,startTime=null,
+    elapsedSec=0,timerStarted=false,gameOver=false,
+    paused=false,pauseStartTime=null,
+    autoFinishing=false,autoFinishTimer=null;
 
 function getCardW(){return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--card-w'));}
 function getCardH(){return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--card-h'));}
@@ -414,19 +420,19 @@ function getOffUp(){return parseInt(getComputedStyle(document.documentElement).g
 // MOVE VALIDATION
 // ════════════════════════════════════════
 function canToFoundation(card,foundation){
-  if(!foundation) return false;
-  if(foundation.length===0) return card.rank===1;
+  if(!foundation)return false;
+  if(foundation.length===0)return card.rank===1;
   const top=foundation[foundation.length-1];
-  return top.suit===card.suit && card.rank===top.rank+1;
+  return top.suit===card.suit&&card.rank===top.rank+1;
 }
 function canToTableau(card,col){
-  if(col.length===0) return card.rank===13;
+  if(col.length===0)return card.rank===13;
   const top=col[col.length-1];
-  if(!top.faceUp) return false;
-  return isRed(top.suit)!==isRed(card.suit) && card.rank===top.rank-1;
+  if(!top.faceUp)return false;
+  return isRed(top.suit)!==isRed(card.suit)&&card.rank===top.rank-1;
 }
 function findFoundationFor(card){
-  for(let i=0;i<4;i++) if(canToFoundation(card,G.foundations[i])) return i;
+  for(let i=0;i<4;i++)if(canToFoundation(card,G.foundations[i]))return i;
   return -1;
 }
 
@@ -435,7 +441,7 @@ function findFoundationFor(card){
 // ════════════════════════════════════════
 function stateKey(g){
   const fh={};
-  for(const f of g.foundations) if(f.length){const t=f[f.length-1];fh[t.suit]=f.length;}
+  for(const f of g.foundations)if(f.length){const t=f[f.length-1];fh[t.suit]=f.length;}
   const fStr=SUITS.map(s=>fh[s]||0).join('');
   const tStr=g.tableau.map(col=>{
     let fd=0;const fu=[];
@@ -446,86 +452,77 @@ function stateKey(g){
   return fStr+'/'+tStr+'/'+sw;
 }
 function isWon(g){return g.foundations.every(f=>f.length===13);}
-
 function solverMoves(g){
   const moves=[];
   if(g.waste.length>0){
     const top=g.waste[g.waste.length-1];
     const fi=g.foundations.findIndex(f=>canToFoundation(top,f));
-    if(fi>=0) moves.push({t:'wf',fi});
+    if(fi>=0)moves.push({t:'wf',fi});
   }
   for(let ti=0;ti<7;ti++){
-    const col=g.tableau[ti];
-    if(!col.length) continue;
-    const top=col[col.length-1];
-    if(!top.faceUp) continue;
+    const col=g.tableau[ti];if(!col.length)continue;
+    const top=col[col.length-1];if(!top.faceUp)continue;
     const fi=g.foundations.findIndex(f=>canToFoundation(top,f));
-    if(fi>=0) moves.push({t:'tf',ti,fi});
+    if(fi>=0)moves.push({t:'tf',ti,fi});
   }
   if(g.waste.length>0){
     const top=g.waste[g.waste.length-1];
-    for(let ti=0;ti<7;ti++) if(canToTableau(top,g.tableau[ti])) moves.push({t:'wt',ti});
+    for(let ti=0;ti<7;ti++)if(canToTableau(top,g.tableau[ti]))moves.push({t:'wt',ti});
   }
   for(let from=0;from<7;from++){
     const col=g.tableau[from];
-    const firstFU=col.findIndex(c=>c.faceUp);
-    if(firstFU<0) continue;
+    const firstFU=col.findIndex(c=>c.faceUp);if(firstFU<0)continue;
     for(let ci=firstFU;ci<col.length;ci++){
       for(let to=0;to<7;to++){
-        if(to===from) continue;
+        if(to===from)continue;
         if(canToTableau(col[ci],g.tableau[to])){
           const uncoversFD=ci===firstFU&&firstFU>0;
           const toNonEmpty=g.tableau[to].length>0;
-          if(uncoversFD||toNonEmpty) moves.push({t:'tt',from,ci,to});
+          if(uncoversFD||toNonEmpty)moves.push({t:'tt',from,ci,to});
         }
       }
     }
   }
-  const maxPasses=g.drawCount===1?8:3;
-  if(g.stock.length>0||(g.waste.length>0&&g.stockPasses<maxPasses)) moves.push({t:'draw'});
+  // Solver uses a fixed pass limit to prevent infinite loops
+  if(g.stock.length>0||(g.waste.length>0&&g.stockPasses<8))moves.push({t:'draw'});
   return moves;
 }
-
 function applyMove(g,mv){
   switch(mv.t){
     case 'wf':{const c=g.waste.pop();g.foundations[mv.fi].push(c);break;}
     case 'tf':{
       const c=g.tableau[mv.ti].pop();g.foundations[mv.fi].push(c);
-      const col=g.tableau[mv.ti];if(col.length&&!col[col.length-1].faceUp)col[col.length-1].faceUp=true;
-      break;
+      const col=g.tableau[mv.ti];if(col.length&&!col[col.length-1].faceUp)col[col.length-1].faceUp=true;break;
     }
     case 'wt':{const c=g.waste.pop();c.faceUp=true;g.tableau[mv.ti].push(c);break;}
     case 'tt':{
-      const cards=g.tableau[mv.from].splice(mv.ci);
-      g.tableau[mv.to].push(...cards);
-      const col=g.tableau[mv.from];if(col.length&&!col[col.length-1].faceUp)col[col.length-1].faceUp=true;
-      break;
+      const cards=g.tableau[mv.from].splice(mv.ci);g.tableau[mv.to].push(...cards);
+      const col=g.tableau[mv.from];if(col.length&&!col[col.length-1].faceUp)col[col.length-1].faceUp=true;break;
     }
     case 'draw':{
-      if(g.stock.length===0){g.stock=g.waste.slice().reverse();g.waste=[];g.stockPasses++;}
+      if(g.stock.length===0){g.stock=g.waste.slice().reverse();g.stock.forEach(c=>c.faceUp=false);g.waste=[];g.stockPasses++;}
       else{const n=Math.min(g.drawCount,g.stock.length);for(let i=0;i<n;i++){const c=g.stock.pop();c.faceUp=true;g.waste.push(c);}}
       break;
     }
   }
   return g;
 }
-
-function solvable(initialGame){
+function solvable(ig){
   const deadline=Date.now()+250;
-  const stack=[cloneGame(initialGame)];
+  const stack=[cloneGame(ig)];
   const visited=new Set();
   while(stack.length&&Date.now()<deadline){
     const g=stack.pop();
     const key=stateKey(g);
-    if(visited.has(key)) continue;
+    if(visited.has(key))continue;
     visited.add(key);
-    if(isWon(g)) return true;
+    if(isWon(g))return true;
     const moves=solverMoves(g);
     moves.sort((a,b)=>{
       const p=m=>m.t.endsWith('f')?2:m.t==='draw'?0:1;
       return p(a)-p(b);
     });
-    for(const mv of moves) stack.push(applyMove(cloneGame(g),mv));
+    for(const mv of moves)stack.push(applyMove(cloneGame(g),mv));
   }
   return false;
 }
@@ -533,51 +530,72 @@ function solvable(initialGame){
 // ════════════════════════════════════════
 // TIMER
 // ════════════════════════════════════════
-function maybeStartTimer(){
-  if(timerStarted||gameOver) return;
-  timerStarted=true;
-  startTime=Date.now();
+function startTimerInterval(){
+  clearInterval(timerInterval);
   timerInterval=setInterval(()=>{
-    if(gameOver){clearInterval(timerInterval);return;}
+    if(gameOver||paused){return;}
     elapsedSec=Math.floor((Date.now()-startTime)/1000);
     updateTimerDisplay();
   },500);
 }
 function stopTimer(){clearInterval(timerInterval);}
+function maybeStartTimer(){
+  if(timerStarted||gameOver||paused)return;
+  timerStarted=true;
+  startTime=Date.now();
+  startTimerInterval();
+}
 function fmtTime(s){const m=0|s/60;const sec=s%60;return m+':'+(sec<10?'0':'')+sec;}
 function updateTimerDisplay(){document.getElementById('timerDisplay').textContent=fmtTime(elapsedSec);}
+
+// ════════════════════════════════════════
+// PAUSE
+// ════════════════════════════════════════
+function togglePause(){
+  if(gameOver)return;
+  paused=!paused;
+  if(paused){
+    // Snapshot current elapsed time before stopping
+    if(timerStarted)elapsedSec=Math.floor((Date.now()-startTime)/1000);
+    stopTimer();pauseStartTime=Date.now();
+    document.getElementById('pause-overlay').classList.add('active');
+    document.getElementById('pauseBtn').textContent='▶ Resume';
+  } else {
+    // Shift startTime forward by however long we were paused
+    if(pauseStartTime){startTime=Date.now()-elapsedSec*1000;pauseStartTime=null;}
+    if(timerStarted)startTimerInterval();
+    document.getElementById('pause-overlay').classList.remove('active');
+    document.getElementById('pauseBtn').textContent='⏸ Pause';
+  }
+}
 
 // ════════════════════════════════════════
 // NEW GAME
 // ════════════════════════════════════════
 async function startNewGame(){
-  stopTimer(); clearAutoFinish();
-  gameOver=false; autoFinishing=false; timerStarted=false;
-  elapsedSec=0; history=[];
-  hideBanner(); hideWin(); updateTimerDisplay();
+  stopTimer();clearAutoFinish();
+  gameOver=false;autoFinishing=false;timerStarted=false;paused=false;
+  pauseStartTime=null;elapsedSec=0;history=[];
+  document.getElementById('pause-overlay').classList.remove('active');
+  document.getElementById('pauseBtn').textContent='⏸ Pause';
+  hideBanner();hideWin();updateTimerDisplay();
 
   if(cfg.winnableOnly){
     showLoading('Finding a winnable game…');
-    // Yield two frames so the loading overlay actually paints before solver blocks
     await new Promise(r=>{requestAnimationFrame(()=>requestAnimationFrame(r));});
     let found=false;
     for(let attempt=0;attempt<20&&!found;attempt++){
-      // Yield between attempts to keep browser responsive
-      if(attempt>0) await new Promise(r=>setTimeout(r,0));
+      if(attempt>0)await new Promise(r=>setTimeout(r,0));
       const deck=shuffle(mkDeck());
       const g=dealDeck(deck,cfg.drawCount);
       if(solvable(g)){G=g;found=true;}
     }
     hideLoading();
-    if(!found){
-      G=dealDeck(shuffle(mkDeck()),cfg.drawCount);
-      showBanner('⚠ Could not verify winnability — playing unverified game.',5000);
-    }
+    if(!found){G=dealDeck(shuffle(mkDeck()),cfg.drawCount);showBanner('⚠ Could not verify winnability — playing unverified game.',5000);}
   } else {
     G=dealDeck(shuffle(mkDeck()),cfg.drawCount);
   }
-
-  render(); checkAutoFinish();
+  render();checkAutoFinish();
 }
 
 // ════════════════════════════════════════
@@ -586,15 +604,14 @@ async function startNewGame(){
 function pushHistory(){history.push(cloneGame(G));}
 
 function clickStock(){
-  if(gameOver) return;
-  maybeStartTimer();
-  hideBanner();
+  if(gameOver||paused)return;
+  maybeStartTimer();hideBanner();
   if(G.stock.length===0){
-    if(G.waste.length===0) return;
-    const maxCycles=G.drawCount===1?999:3;
-    if(G.stockPasses>=maxCycles){showBanner('No more stock passes allowed.',3000);return;}
+    if(G.waste.length===0)return;
+    // No limit on cycles — always allow recycling
     pushHistory();
     G.stock=G.waste.slice().reverse();
+    G.stock.forEach(c=>c.faceUp=false); // cards go back face-down
     G.waste=[];G.stockPasses++;
   } else {
     pushHistory();
@@ -605,47 +622,40 @@ function clickStock(){
 }
 
 function autoMoveCard(source){
-  if(gameOver) return;
+  if(gameOver||paused)return;
   let card;
-  if(source.type==='waste') card=G.waste[G.waste.length-1];
-  else if(source.type==='tableau') card=G.tableau[source.ti][source.ci];
+  if(source.type==='waste')card=G.waste[G.waste.length-1];
+  else if(source.type==='tableau')card=G.tableau[source.ti][source.ci];
   else if(source.type==='foundation'){
-    const f=G.foundations[source.fi];
-    if(!f.length) return;
+    const f=G.foundations[source.fi];if(!f.length)return;
     card=f[f.length-1];
   }
-  if(!card||!card.faceUp) return;
+  if(!card||!card.faceUp)return;
 
-  const isTopCard = source.type==='tableau'
-    ? source.ci===G.tableau[source.ti].length-1
-    : true;
+  const isTopCard=source.type==='tableau'
+    ?source.ci===G.tableau[source.ti].length-1
+    :true;
 
-  // 1. Foundation (only single top cards)
-  if(isTopCard){
+  // 1. Try foundation — but NOT for foundation→foundation (would be a no-op)
+  if(source.type!=='foundation'&&isTopCard){
     const fi=findFoundationFor(card);
-    if(fi>=0){
-      maybeStartTimer(); pushHistory();
-      executeMove(source,{type:'foundation',fi});
-      return;
-    }
+    if(fi>=0){maybeStartTimer();pushHistory();executeMove(source,{type:'foundation',fi});return;}
   }
 
-  // 2. Best tableau target
+  // 2. Try best tableau target
   const cards=source.type==='tableau'?G.tableau[source.ti].slice(source.ci):[card];
   let bestTarget=-1,bestScore=-Infinity;
   for(let ti=0;ti<7;ti++){
-    if(source.type==='tableau'&&ti===source.ti) continue;
-    if(!canToTableau(cards[0],G.tableau[ti])) continue;
+    if(source.type==='tableau'&&ti===source.ti)continue;
+    if(!canToTableau(cards[0],G.tableau[ti]))continue;
     let score=0;
-    if(source.type==='tableau'&&source.ci>0&&!G.tableau[source.ti][source.ci-1].faceUp) score+=10;
-    if(G.tableau[ti].length>0) score+=2;
+    // Prefer moves that uncover a face-down card
+    if(source.type==='tableau'&&source.ci>0&&!G.tableau[source.ti][source.ci-1].faceUp)score+=10;
+    // Prefer non-empty targets (keep empty slots for Kings)
+    if(G.tableau[ti].length>0)score+=2;
     if(score>bestScore){bestScore=score;bestTarget=ti;}
   }
-  if(bestTarget>=0){
-    maybeStartTimer(); pushHistory();
-    executeMove(source,{type:'tableau',ti:bestTarget});
-    return;
-  }
+  if(bestTarget>=0){maybeStartTimer();pushHistory();executeMove(source,{type:'tableau',ti:bestTarget});return;}
 
   // No valid move → mistake
   maybeStartTimer();
@@ -661,7 +671,7 @@ function executeMove(source,dest){
   else if(source.type==='tableau'){
     movedCards=G.tableau[source.ti].splice(source.ci);
     const col=G.tableau[source.ti];
-    if(col.length&&!col[col.length-1].faceUp) col[col.length-1].faceUp=true;
+    if(col.length&&!col[col.length-1].faceUp)col[col.length-1].faceUp=true;
   } else if(source.type==='foundation'){movedCards=[G.foundations[source.fi].pop()];}
 
   if(dest.type==='foundation'){G.foundations[dest.fi].push(...movedCards);}
@@ -673,7 +683,7 @@ function executeMove(source,dest){
 }
 
 function undoMove(){
-  if(!history.length||gameOver) return;
+  if(!history.length||gameOver||paused)return;
   G=history.pop();G.undos++;
   document.getElementById('undosDisplay').textContent=G.undos;
   document.getElementById('movesDisplay').textContent=G.moves;
@@ -686,30 +696,23 @@ function undoMove(){
 // ════════════════════════════════════════
 function checkAutoFinish(){
   const allFaceUp=G.tableau.every(col=>col.every(c=>c.faceUp));
-  const stockEmpty=G.stock.length===0;
   document.getElementById('autoFinishBtn').style.display=
-    (!gameOver&&allFaceUp&&stockEmpty)?'':'none';
+    (!gameOver&&allFaceUp&&G.stock.length===0)?'':'none';
 }
-
-function beginAutoFinish(){if(!autoFinishing&&!gameOver){autoFinishing=true;autoFinishStep();}}
+function beginAutoFinish(){if(!autoFinishing&&!gameOver&&!paused){autoFinishing=true;autoFinishStep();}}
 function clearAutoFinish(){clearTimeout(autoFinishTimer);autoFinishing=false;}
-
 function autoFinishStep(){
   if(!autoFinishing||gameOver){autoFinishing=false;return;}
   let moved=false;
-  // Try waste
-  if(!moved&&G.waste.length>0){
+  if(G.waste.length>0){
     const top=G.waste[G.waste.length-1];
     const fi=findFoundationFor(top);
     if(fi>=0){pushHistory();executeMove({type:'waste'},{type:'foundation',fi});moved=true;}
   }
-  // Try tableau
   if(!moved){
     for(let ti=0;ti<7&&!moved;ti++){
-      const col=G.tableau[ti];
-      if(!col.length) continue;
-      const top=col[col.length-1];
-      if(!top.faceUp) continue;
+      const col=G.tableau[ti];if(!col.length)continue;
+      const top=col[col.length-1];if(!top.faceUp)continue;
       const fi=findFoundationFor(top);
       if(fi>=0){pushHistory();executeMove({type:'tableau',ti,ci:col.length-1},{type:'foundation',fi});moved=true;}
     }
@@ -720,10 +723,10 @@ function autoFinishStep(){
 }
 
 // ════════════════════════════════════════
-// WIN / NO-MOVES CHECKS
+// WIN / NO-MOVES
 // ════════════════════════════════════════
 function checkWin(){
-  if(!isWon(G)) return;
+  if(!isWon(G))return;
   gameOver=true;stopTimer();
   recordGameEnd(true,elapsedSec,G.moves,G.mistakes,G.undos);
   document.getElementById('w-time').textContent=fmtTime(elapsedSec);
@@ -732,23 +735,23 @@ function checkWin(){
   document.getElementById('w-undos').textContent=G.undos;
   document.getElementById('win-overlay').classList.add('open');
 }
-
 function checkNoMoves(){
-  if(gameOver||autoFinishing) return;
-  const canDraw=G.stock.length>0||(G.waste.length>0&&G.stockPasses<(G.drawCount===1?999:3));
-  if(canDraw) return;
+  if(gameOver||autoFinishing)return;
+  // Unlimited cycling means can always draw if waste or stock has cards
+  const canDraw=G.stock.length>0||G.waste.length>0;
+  if(canDraw)return;
   let any=false;
   if(G.waste.length>0){
     const w=G.waste[G.waste.length-1];
-    if(findFoundationFor(w)>=0) any=true;
-    if(!any) for(let ti=0;ti<7;ti++) if(canToTableau(w,G.tableau[ti])){any=true;break;}
+    if(findFoundationFor(w)>=0)any=true;
+    if(!any)for(let ti=0;ti<7;ti++)if(canToTableau(w,G.tableau[ti])){any=true;break;}
   }
-  if(!any) for(let ti=0;ti<7&&!any;ti++){
-    const col=G.tableau[ti];if(!col.length) continue;
-    const top=col[col.length-1];if(!top.faceUp) continue;
+  if(!any)for(let ti=0;ti<7&&!any;ti++){
+    const col=G.tableau[ti];if(!col.length)continue;
+    const top=col[col.length-1];if(!top.faceUp)continue;
     if(findFoundationFor(top)>=0){any=true;break;}
     for(let ti2=0;ti2<7;ti2++){
-      if(ti2===ti) continue;
+      if(ti2===ti)continue;
       if(canToTableau(top,G.tableau[ti2])){any=true;break;}
     }
   }
@@ -763,21 +766,17 @@ function checkNoMoves(){
 // RENDERING
 // ════════════════════════════════════════
 function cardColorClass(card){
-  if(cfg.cardFace==='fourcolor'){
+  if(cfg.cardFace==='fourcolor')
     return card.suit==='S'?'spades':card.suit==='H'?'hearts':card.suit==='D'?'diamonds':'clubs';
-  }
   return isRed(card.suit)?'red':'black';
 }
-
 function mkCardEl(card,cls=''){
   const div=document.createElement('div');
   div.className='card '+cls;
   if(card.faceUp){
     div.className+=` face-${cfg.cardFace} ${cardColorClass(card)}`;
     const sym=SYM[card.suit],r=rn(card.rank);
-    if(cfg.cardFace==='vintage'){
-      const bd=document.createElement('div');bd.className='vintage-border';div.appendChild(bd);
-    }
+    if(cfg.cardFace==='vintage'){const bd=document.createElement('div');bd.className='vintage-border';div.appendChild(bd);}
     const tl=document.createElement('div');tl.className='card-corner tl';
     tl.innerHTML=`<div class="card-rank">${r}</div><div class="card-suit-small">${sym}</div>`;
     const ct=document.createElement('div');ct.className='card-center';ct.textContent=sym;
@@ -806,9 +805,8 @@ function renderStock(){
     el.style.cssText='position:absolute;inset:0;cursor:pointer;';
     slot.appendChild(el);
     const cnt=document.createElement('span');
-    cnt.style.cssText='position:absolute;bottom:4px;right:5px;font-size:10px;color:rgba(255,255,255,.7);font-weight:800;background:rgba(0,0,0,.45);border-radius:3px;padding:1px 4px;pointer-events:none;z-index:5;';
-    cnt.textContent=G.stock.length;
-    slot.appendChild(cnt);
+    cnt.style.cssText='position:absolute;bottom:4px;right:5px;font-size:10px;color:rgba(255,255,255,.8);font-weight:800;background:rgba(0,0,0,.5);border-radius:3px;padding:1px 4px;pointer-events:none;z-index:5;';
+    cnt.textContent=G.stock.length;slot.appendChild(cnt);
   } else {
     slot.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2em;color:rgba(255,255,255,.3);pointer-events:none;">↺</div>';
   }
@@ -818,7 +816,7 @@ function renderWaste(){
   const area=document.getElementById('waste-area');
   area.innerHTML='';
   const cardW=getCardW();
-  const fanOffset=Math.max(10,Math.round(cardW*0.22));
+  const fanOff=Math.max(10,Math.round(cardW*.22));
   if(G.drawCount===1){
     if(G.waste.length>0){
       const el=mkCardEl(G.waste[G.waste.length-1]);
@@ -831,12 +829,9 @@ function renderWaste(){
     for(let i=0;i<vis;i++){
       const card=G.waste[G.waste.length-vis+i];
       const el=mkCardEl(card);
-      el.style.cssText=`position:absolute;top:0;left:${i*fanOffset}px;width:${cardW}px;`;
-      if(i===vis-1){
-        el.addEventListener('click',()=>handleCardClick({type:'waste'}));
-      } else {
-        el.classList.add('no-hover');
-      }
+      el.style.cssText=`position:absolute;top:0;left:${i*fanOff}px;width:${cardW}px;`;
+      if(i===vis-1){el.addEventListener('click',()=>handleCardClick({type:'waste'}));}
+      else{el.classList.add('no-hover');}
       area.appendChild(el);
     }
   }
@@ -846,7 +841,7 @@ function renderFoundations(){
   for(let fi=0;fi<4;fi++){
     const slot=document.getElementById('foundation-'+fi);
     const hint=slot.querySelector('.suit-hint');
-    slot.innerHTML='';if(hint) slot.appendChild(hint);
+    slot.innerHTML='';if(hint)slot.appendChild(hint);
     const f=G.foundations[fi];
     if(f.length>0){
       const el=mkCardEl(f[f.length-1]);
@@ -868,8 +863,7 @@ function renderTableau(){
     for(let ci=0;ci<col.length;ci++){
       const card=col[ci];
       const el=mkCardEl(card);
-      let top=0;
-      for(let k=0;k<ci;k++) top+=col[k].faceUp?offUp:offDown;
+      let top=0;for(let k=0;k<ci;k++)top+=col[k].faceUp?offUp:offDown;
       el.style.cssText=`position:absolute;top:${top}px;left:0;z-index:${ci+1};width:${cardW}px;`;
       if(card.faceUp){
         el.addEventListener('click',(e)=>{e.stopPropagation();handleCardClick({type:'tableau',ti,ci});});
@@ -882,34 +876,35 @@ function renderTableau(){
       totalH=top+cardH;
     }
     colEl.style.minHeight=(totalH+4)+'px';
-    colEl.onclick=(e)=>{if(e.target===colEl) handleTableauColClick(ti);};
+    colEl.onclick=(e)=>{if(e.target===colEl)handleTableauColClick(ti);};
   }
 }
 
 // ════════════════════════════════════════
 // CLICK & DRAG
 // ════════════════════════════════════════
-function handleCardClick(source){if(!gameOver) autoMoveCard(source);}
-
+function handleCardClick(source){if(!gameOver&&!paused)autoMoveCard(source);}
 function handleTableauColClick(ti){
-  if(gameOver||!G.waste.length) return;
+  if(gameOver||paused||!G.waste.length)return;
   const w=G.waste[G.waste.length-1];
-  if(G.tableau[ti].length===0&&w.rank===13){
-    maybeStartTimer();pushHistory();
-    executeMove({type:'waste'},{type:'tableau',ti});
-  }
+  if(G.tableau[ti].length===0&&w.rank===13){maybeStartTimer();pushHistory();executeMove({type:'waste'},{type:'tableau',ti});}
 }
 
-let dragSource=null,ghostEl=null,dragCards=[];
+// Drag with movement threshold — prevents drag-end from interfering with simple clicks
+let dragSource=null,ghostEl=null,dragCards=[],dragStartX=0,dragStartY=0,hasDragged=false;
 
 function startDrag(e,source,opts={}){
-  if(gameOver) return;
+  if(gameOver||paused)return;
   const isTouch=opts.touch;
-  if(isTouch) e.preventDefault();
+  if(isTouch)e.preventDefault();
   dragSource=source;
+  const cx=isTouch?e.touches[0].clientX:e.clientX;
+  const cy=isTouch?e.touches[0].clientY:e.clientY;
+  dragStartX=cx;dragStartY=cy;hasDragged=false;
+
   const{ti,ci}=source;
   dragCards=G.tableau[ti].slice(ci);
-  const cardW=getCardW(),offUp=getOffUp();
+  const cardW=getCardW(),offUp=getOffUp(),cardH=getCardH();
   ghostEl=document.createElement('div');
   ghostEl.style.cssText='position:fixed;z-index:2000;pointer-events:none;';
   dragCards.forEach((card,idx)=>{
@@ -917,15 +912,13 @@ function startDrag(e,source,opts={}){
     el.style.cssText=`position:absolute;top:${idx*offUp}px;left:0;width:${cardW}px;opacity:.9;`;
     ghostEl.appendChild(el);
   });
-  const cardH=getCardH();
   const ghostH=cardH+(dragCards.length-1)*offUp;
   ghostEl.style.width=cardW+'px';ghostEl.style.height=ghostH+'px';
-  const cx=isTouch?e.touches[0].clientX:e.clientX;
-  const cy=isTouch?e.touches[0].clientY:e.clientY;
   const srcEl=document.getElementById('tableau-'+ti).children[ci];
   const rect=srcEl?srcEl.getBoundingClientRect():{left:cx-cardW/2,top:cy-10};
   ghostEl._ox=cx-rect.left;ghostEl._oy=cy-rect.top;
   positionGhost(cx,cy);document.body.appendChild(ghostEl);
+
   if(isTouch){
     document.addEventListener('touchmove',onDragMove,{passive:false});
     document.addEventListener('touchend',onDragEnd);
@@ -936,14 +929,18 @@ function startDrag(e,source,opts={}){
 }
 
 function positionGhost(x,y){
-  if(!ghostEl) return;
+  if(!ghostEl)return;
   ghostEl.style.left=(x-ghostEl._ox)+'px';ghostEl.style.top=(y-ghostEl._oy)+'px';
 }
 
 function onDragMove(e){
   const cx=e.touches?e.touches[0].clientX:e.clientX;
   const cy=e.touches?e.touches[0].clientY:e.clientY;
-  positionGhost(cx,cy);if(e.touches) e.preventDefault();
+  if(!hasDragged){
+    const dx=cx-dragStartX,dy=cy-dragStartY;
+    if(dx*dx+dy*dy>25)hasDragged=true; // 5px threshold
+  }
+  positionGhost(cx,cy);if(e.touches)e.preventDefault();
 }
 
 function onDragEnd(e){
@@ -951,17 +948,20 @@ function onDragEnd(e){
   document.removeEventListener('mouseup',onDragEnd);
   document.removeEventListener('touchmove',onDragMove);
   document.removeEventListener('touchend',onDragEnd);
+  if(ghostEl){document.body.removeChild(ghostEl);ghostEl=null;}
+
+  // Only attempt a drop if the user actually dragged (not a simple click)
+  if(!hasDragged||!dragSource){dragSource=null;dragCards=[];return;}
+
   const cx=e.changedTouches?e.changedTouches[0].clientX:e.clientX;
   const cy=e.changedTouches?e.changedTouches[0].clientY:e.clientY;
-  if(ghostEl){document.body.removeChild(ghostEl);ghostEl=null;}
-  if(!dragSource){dragCards=[];return;}
   const el=document.elementFromPoint(cx,cy);
   const target=el?findDropTarget(el):null;
   if(target&&dragCards.length){
     const card=dragCards[0];
     if(target.type==='foundation'&&dragCards.length===1&&canToFoundation(card,G.foundations[target.fi])){
       maybeStartTimer();pushHistory();executeMove(dragSource,{type:'foundation',fi:target.fi});
-    } else if(target.type==='tableau'&&canToTableau(card,G.tableau[target.ti])){
+    } else if(target.type==='tableau'&&target.ti!==dragSource.ti&&canToTableau(card,G.tableau[target.ti])){
       maybeStartTimer();pushHistory();executeMove(dragSource,{type:'tableau',ti:target.ti});
     }
   }
@@ -971,7 +971,7 @@ function onDragEnd(e){
 function findDropTarget(el){
   let node=el;
   while(node&&node!==document.body){
-    if(node.id&&node.id.startsWith('tableau-'))  return{type:'tableau', ti:parseInt(node.id.split('-')[1])};
+    if(node.id&&node.id.startsWith('tableau-'))  return{type:'tableau',  ti:parseInt(node.id.split('-')[1])};
     if(node.id&&node.id.startsWith('foundation-'))return{type:'foundation',fi:parseInt(node.id.split('-')[1])};
     node=node.parentElement;
   }
@@ -980,9 +980,9 @@ function findDropTarget(el){
 
 function flashMistake(source){
   let el=null;
-  if(source.type==='waste') el=document.getElementById('waste-area').lastElementChild;
-  else if(source.type==='tableau') el=[...document.getElementById('tableau-'+source.ti).children][source.ci];
-  if(!el) return;
+  if(source.type==='waste')el=document.getElementById('waste-area').lastElementChild;
+  else if(source.type==='tableau')el=[...document.getElementById('tableau-'+source.ti).children][source.ci];
+  if(!el)return;
   el.style.outline='3px solid #ef5350';el.style.outlineOffset='-2px';
   setTimeout(()=>{el.style.outline='';el.style.outlineOffset='';},500);
 }
@@ -992,10 +992,8 @@ function flashMistake(source){
 // ════════════════════════════════════════
 let bannerTimer=null;
 function showBanner(msg,dur=0){
-  const b=document.getElementById('no-moves-banner');
-  b.textContent=msg;b.style.display='block';
-  clearTimeout(bannerTimer);
-  if(dur>0) bannerTimer=setTimeout(hideBanner,dur);
+  const b=document.getElementById('no-moves-banner');b.textContent=msg;b.style.display='block';
+  clearTimeout(bannerTimer);if(dur>0)bannerTimer=setTimeout(hideBanner,dur);
 }
 function hideBanner(){document.getElementById('no-moves-banner').style.display='none';}
 function showLoading(msg){document.getElementById('loading-msg').textContent=msg||'Loading…';document.getElementById('loading-overlay').classList.add('open');}
@@ -1009,7 +1007,7 @@ function applySettingsNewGame(){closeSettings();startNewGame();}
 
 function showStats(){populateStats();document.getElementById('stats-overlay').classList.add('open');}
 function closeStats(){document.getElementById('stats-overlay').classList.remove('open');}
-function clearStats(){if(!confirm('Clear all statistics?')) return;localStorage.removeItem('sol-stats');populateStats();}
+function clearStats(){if(!confirm('Clear all statistics?'))return;localStorage.removeItem('sol-stats');populateStats();}
 
 function populateStats(){
   const s=getStats();
@@ -1043,31 +1041,29 @@ function syncSettingsUI(){
     );
   });
 }
-
 document.getElementById('chk-winnable').addEventListener('change',e=>{cfg.winnableOnly=e.target.checked;saveCfg();});
 document.querySelectorAll('[data-opt]').forEach(el=>{
   el.addEventListener('click',()=>{
     const{opt,val}=el.dataset;
-    if(opt==='draw') cfg.drawCount=parseInt(val);
-    else if(opt==='face') cfg.cardFace=val;
-    else if(opt==='back') cfg.cardBack=val;
+    if(opt==='draw')cfg.drawCount=parseInt(val);
+    else if(opt==='face')cfg.cardFace=val;
+    else if(opt==='back')cfg.cardBack=val;
     else if(opt==='bg'){cfg.background=val;document.body.className='bg-'+val;}
-    saveCfg();if(G) render();syncSettingsUI();
+    saveCfg();if(G)render();syncSettingsUI();
   });
 });
 
-// Keyboard shortcuts
 document.addEventListener('keydown',e=>{
-  if(e.target.tagName==='INPUT') return;
-  if(e.key==='z'||e.key==='u') undoMove();
-  if(e.key==='n'||e.key==='N') startNewGame();
-  if(e.key==='d'||e.key==='D') clickStock();
-  if(e.key==='Escape'){closeSettings();closeStats();}
+  if(e.target.tagName==='INPUT')return;
+  if(e.key==='z'||e.key==='u')undoMove();
+  if(e.key==='n'||e.key==='N')startNewGame();
+  if(e.key==='d'||e.key==='D')clickStock();
+  if(e.key==='p'||e.key==='P')togglePause();
+  if(e.key==='Escape'){closeSettings();closeStats();if(paused)togglePause();}
 });
 
-// Close modals on backdrop click
 ['settings-overlay','stats-overlay','win-overlay'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id) document.getElementById(id).classList.remove('open');});
+  document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id)document.getElementById(id).classList.remove('open');});
 });
 
 // ════════════════════════════════════════
