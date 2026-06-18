@@ -409,7 +409,7 @@ function dealDeck(deck,drawCount){
 let G=null,history=[],timerInterval=null,startTime=null,
     elapsedSec=0,timerStarted=false,gameOver=false,
     paused=false,pauseStartTime=null,
-    autoFinishing=false,autoFinishTimer=null;
+    autoFinishing=false,autoFinishTimer=null,autoFinishStuck=0;
 
 function getCardW(){return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--card-w'));}
 function getCardH(){return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--card-h'));}
@@ -697,9 +697,9 @@ function undoMove(){
 function checkAutoFinish(){
   const allFaceUp=G.tableau.every(col=>col.every(c=>c.faceUp));
   document.getElementById('autoFinishBtn').style.display=
-    (!gameOver&&allFaceUp&&G.stock.length===0)?'':'none';
+    (!gameOver&&allFaceUp)?'':'none';
 }
-function beginAutoFinish(){if(!autoFinishing&&!gameOver&&!paused){autoFinishing=true;autoFinishStep();}}
+function beginAutoFinish(){if(!autoFinishing&&!gameOver&&!paused){autoFinishing=true;autoFinishStuck=0;autoFinishStep();}}
 function clearAutoFinish(){clearTimeout(autoFinishTimer);autoFinishing=false;}
 function autoFinishStep(){
   if(!autoFinishing||gameOver){autoFinishing=false;return;}
@@ -707,17 +707,27 @@ function autoFinishStep(){
   if(G.waste.length>0){
     const top=G.waste[G.waste.length-1];
     const fi=findFoundationFor(top);
-    if(fi>=0){pushHistory();executeMove({type:'waste'},{type:'foundation',fi});moved=true;}
+    if(fi>=0){autoFinishStuck=0;pushHistory();executeMove({type:'waste'},{type:'foundation',fi});moved=true;}
   }
   if(!moved){
     for(let ti=0;ti<7&&!moved;ti++){
       const col=G.tableau[ti];if(!col.length)continue;
       const top=col[col.length-1];if(!top.faceUp)continue;
       const fi=findFoundationFor(top);
-      if(fi>=0){pushHistory();executeMove({type:'tableau',ti,ci:col.length-1},{type:'foundation',fi});moved=true;}
+      if(fi>=0){autoFinishStuck=0;pushHistory();executeMove({type:'tableau',ti,ci:col.length-1},{type:'foundation',fi});moved=true;}
     }
   }
-  if(!moved){autoFinishing=false;return;}
+  // Draw from stock one card at a time if no foundation move was possible
+  if(!moved){
+    const remaining=G.stock.length+G.waste.length;
+    if(remaining>0&&autoFinishStuck<=(remaining+1)*(remaining+1)){
+      autoFinishStuck++;
+      if(G.stock.length>0){const c=G.stock.pop();c.faceUp=true;G.waste.push(c);G.moves++;render();}
+      else{G.stock=G.waste.slice().reverse();G.stock.forEach(c=>c.faceUp=false);G.waste=[];G.stockPasses++;render();}
+      moved=true;
+    }
+  }
+  if(!moved){autoFinishing=false;render();return;}
   if(isWon(G)){autoFinishing=false;return;}
   autoFinishTimer=setTimeout(autoFinishStep,110);
 }
@@ -866,7 +876,6 @@ function renderTableau(){
       let top=0;for(let k=0;k<ci;k++)top+=col[k].faceUp?offUp:offDown;
       el.style.cssText=`position:absolute;top:${top}px;left:0;z-index:${ci+1};width:${cardW}px;`;
       if(card.faceUp){
-        el.addEventListener('click',(e)=>{e.stopPropagation();handleCardClick({type:'tableau',ti,ci});});
         el.addEventListener('mousedown',(e)=>{if(e.button===0)startDrag(e,{type:'tableau',ti,ci});});
         el.addEventListener('touchstart',(e)=>startDrag(e,{type:'tableau',ti,ci},{touch:true}),{passive:false});
       } else {
@@ -950,22 +959,28 @@ function onDragEnd(e){
   document.removeEventListener('touchend',onDragEnd);
   if(ghostEl){document.body.removeChild(ghostEl);ghostEl=null;}
 
-  // Only attempt a drop if the user actually dragged (not a simple click)
-  if(!hasDragged||!dragSource){dragSource=null;dragCards=[];return;}
+  const savedSource=dragSource,savedCards=[...dragCards];
+  dragSource=null;dragCards=[];
+  if(!savedSource)return;
+
+  if(!hasDragged){
+    // No significant movement — treat as a click
+    handleCardClick(savedSource);
+    return;
+  }
 
   const cx=e.changedTouches?e.changedTouches[0].clientX:e.clientX;
   const cy=e.changedTouches?e.changedTouches[0].clientY:e.clientY;
   const el=document.elementFromPoint(cx,cy);
   const target=el?findDropTarget(el):null;
-  if(target&&dragCards.length){
-    const card=dragCards[0];
-    if(target.type==='foundation'&&dragCards.length===1&&canToFoundation(card,G.foundations[target.fi])){
-      maybeStartTimer();pushHistory();executeMove(dragSource,{type:'foundation',fi:target.fi});
-    } else if(target.type==='tableau'&&target.ti!==dragSource.ti&&canToTableau(card,G.tableau[target.ti])){
-      maybeStartTimer();pushHistory();executeMove(dragSource,{type:'tableau',ti:target.ti});
+  if(target&&savedCards.length){
+    const card=savedCards[0];
+    if(target.type==='foundation'&&savedCards.length===1&&canToFoundation(card,G.foundations[target.fi])){
+      maybeStartTimer();pushHistory();executeMove(savedSource,{type:'foundation',fi:target.fi});
+    } else if(target.type==='tableau'&&target.ti!==savedSource.ti&&canToTableau(card,G.tableau[target.ti])){
+      maybeStartTimer();pushHistory();executeMove(savedSource,{type:'tableau',ti:target.ti});
     }
   }
-  dragSource=null;dragCards=[];
 }
 
 function findDropTarget(el){
